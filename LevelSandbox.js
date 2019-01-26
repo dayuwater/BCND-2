@@ -43,29 +43,13 @@ class LevelSandbox {
     }
 
     // Add data to LevelDB with generated key.
-    addDataToLevelDB(value) {
-        const self = this;
-        let i = 0;
+    async addDataToLevelDB(value) {
+        // get the block height
+        const height = await this.getBlocksCount().catch(err => -1);
 
-        return new Promise((resolve, reject) => {
-            self.db.createReadStream().on('data', function(data) {
-                i++;
-            }).on('error', function(err) {
-                console.log('Unable to read data stream!', err);
-                reject(err);
-            }).on('close', function() {
-                console.log('Block #' + i);
-
-                self.addLevelDBData(i, value)
-                .then(value => resolve(value))
-                .catch(err => {
-                    console.log(err);
-                    reject(err);
-                });
-                
-            });
-        });
+        if(height < 0) {console.log("Cannot get block height"); return;}
         
+        return this.addLevelDBData(height, value);
     }
 
     // Method that return the height
