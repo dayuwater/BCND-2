@@ -31,14 +31,18 @@ class LevelSandbox {
     addLevelDBData(key, value) {
         let self = this;
         return new Promise(function(resolve, reject) {
+
             // Add your code here, remember in Promises you need to resolve() or reject() 
-            self.db.put(key, value, function(err) {
+
+            // REMEMBER TO convert Object to JSON String before adding to LevelDB!
+            const strValue = JSON.stringify(value);
+            self.db.put(key, strValue, function(err) {
                 if (err) {
                     console.log('Block ' + key + ' submission failed', err);
                     reject(err);
                 }
             });
-            resolve({key:value});
+            resolve(value);
         });
     }
 
@@ -49,7 +53,8 @@ class LevelSandbox {
 
         if(height < 0) {console.log("Cannot get block height"); return;}
         
-        return this.addLevelDBData(height, value);
+        const result = await this.addLevelDBData(height, value);
+        return result;
     }
 
     // Method that return the height
