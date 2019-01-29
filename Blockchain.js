@@ -56,6 +56,52 @@ class Blockchain{
         });
 
     }
+
+    // Get block height, it is a helper method that return the height of the blockchain
+    async getBlockHeight() {
+        // Add your code here
+        return await this.bd.getBlocksCount().catch(err => {
+            console.log("Cannot get the block count");
+            return -1;
+        })
+    }
+
+    // Get Block By Height
+    async getBlock(height) {
+        // Add your code here
+        const block = await this.bd.getLevelDBData(height).catch(err => {
+            console.log("Cannot get the data of Block " + height);
+            return null;
+        })
+
+        return JSON.parse(block);
+    }
+
+    // Validate if Block is being tampered by Block Height
+    async validateBlock(height) {
+        // Add your code here
+        const block = await this.getBlock(height);
+
+        // If that block does not exist, return false
+        if(!block) {return false;}
+
+        const prevHash = block.hash;
+        block.hash = "";
+
+        return SHA256(JSON.stringify(block)).toString() === prevHash;
+           
+    }
+
+    // Utility Method to Tamper a Block for Test Validation
+    // This method is for testing purpose
+    _modifyBlock(height, block) {
+        let self = this;
+        return new Promise( (resolve, reject) => {
+            self.bd.addLevelDBData(height, JSON.stringify(block).toString()).then((blockModified) => {
+                resolve(blockModified);
+            }).catch((err) => { console.log(err); reject(err)});
+        });
+    }
 }
 
 module.exports = Blockchain;
