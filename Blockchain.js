@@ -92,6 +92,32 @@ class Blockchain{
            
     }
 
+    // Validate Blockchain
+    async validateChain() {
+        const height = await this.getBlockHeight();
+
+        let prevHash = "";
+        let errorLog = [];
+        for(let i=0; i<height; i++){
+            const block = await this.getBlock(i);
+
+            //console.log(block);
+            if(prevHash !== block.previousBlockHash){
+                errorLog.push(`The prevHash of Block ${i} does not match`);
+            }
+
+            if(!await this.validateBlock(i)){
+                errorLog.push(`Block ${i} is not valid`);
+            }
+
+            prevHash = block.hash;
+
+        }
+
+        return errorLog;
+    }
+
+
     // Utility Method to Tamper a Block for Test Validation
     // This method is for testing purpose
     _modifyBlock(height, block) {

@@ -21,7 +21,7 @@ class LevelSandbox {
                     console.log('Not found!', err);
                     reject(err);
                 }
-                console.log('Value = ' + value);
+                // console.log('Value = ' + value);
                 resolve(value);
             })
         });

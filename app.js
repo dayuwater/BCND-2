@@ -36,7 +36,15 @@ async function test(){
 	}
 
 	async function validateChain(){
-		
+		console.log("Validate chain");
+		// Be careful this only will work if `validateChain` method in Blockchain.js file return a Promise
+		const errorLog = await myBlockChain.validateChain()
+		.catch((error) => {
+			console.log(error);
+		})
+
+		errorLog.length > 0 ? errorLog.forEach(err => console.log(err)) : console.log("The chain is valid");
+
 	}
 
 
@@ -67,7 +75,21 @@ async function test(){
 	await getABlock();
 	await validateBlock();
 	await validateChain();
-	await tamperBlock();
+
+	// await tamperBlock();
+
+	// Add blocks
+	(function theLoop (i) {
+		setTimeout(function () {
+			let blockTest = new Block("Test Block - " + (i + 1));
+			// Be careful this only will work if your method 'addBlock' in the Blockchain.js file return a Promise
+			myBlockChain.addBlock(blockTest).then((result) => {
+				console.log(result);
+				i++;
+				if (i < 10) theLoop(i);
+			});
+		}, 10000);
+	})(0);
 }
 
 test();
@@ -79,18 +101,6 @@ test();
  ** Function for Create Tests Blocks   ****
  ******************************************/
 
-
-// (function theLoop (i) {
-// 	setTimeout(function () {
-// 		let blockTest = new Block("Test Block - " + (i + 1));
-// 		// Be careful this only will work if your method 'addBlock' in the Blockchain.js file return a Promise
-// 		myBlockChain.addBlock(blockTest).then((result) => {
-// 			console.log(result);
-// 			i++;
-// 			if (i < 10) theLoop(i);
-// 		});
-// 	}, 10000);
-//   })(0);
 
 
 // /***********************************************
