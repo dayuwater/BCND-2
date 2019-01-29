@@ -50,7 +50,7 @@ async function test(){
 
 	async function tamperBlock(){
 		console.log("Tampering block");
-		myBlockChain.getBlock(5).then((block) => {
+		myBlockChain.getBlock(2).then((block) => {
 			let blockAux = block;
 			blockAux.body = "Tampered Block";
 			myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
@@ -76,7 +76,7 @@ async function test(){
 	await validateBlock();
 	await validateChain();
 
-	// await tamperBlock();
+	await tamperBlock();
 
 	// Add blocks
 	(function theLoop (i) {

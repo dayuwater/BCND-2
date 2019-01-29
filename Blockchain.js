@@ -10,7 +10,7 @@ class Blockchain{
 
     async generateGenesisBlock(){
         // Get the block height
-        const height = await this.bd.getBlocksCount().catch(err => {console.log(err); return -1;});
+        const height = await this.getBlockHeight();
         if(height < 0) {
             console.log("Cannot add block"); 
             return;
@@ -24,7 +24,7 @@ class Blockchain{
 
     async addBlock(newBlock){
         // Get the block height
-        const height = await this.bd.getBlocksCount().catch(err => {console.log(err); return -1;});
+        const height = await this.getBlockHeight();
         if(height < 0) {
             console.log("Cannot add block"); 
             return;
@@ -86,6 +86,8 @@ class Blockchain{
         if(!block) {return false;}
 
         const prevHash = block.hash;
+        console.log(prevHash);
+        console.log(block);
         block.hash = "";
 
         return SHA256(JSON.stringify(block)).toString() === prevHash;
@@ -123,7 +125,7 @@ class Blockchain{
     _modifyBlock(height, block) {
         let self = this;
         return new Promise( (resolve, reject) => {
-            self.bd.addLevelDBData(height, JSON.stringify(block).toString()).then((blockModified) => {
+            self.bd.addLevelDBData(height, block).then((blockModified) => {
                 resolve(blockModified);
             }).catch((err) => { console.log(err); reject(err)});
         });
