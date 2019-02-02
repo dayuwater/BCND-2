@@ -11,13 +11,13 @@ class Blockchain{
     async generateGenesisBlock(){
         // Get the block height
         const height = await this.getBlockHeight();
-        if(height < 0) {
+        if(height < -1) {
             console.log("Cannot add block"); 
             return;
         }
 
         // If there is no block in the chain, generate a genesis block
-        if(height == 0){
+        if(height == -1){
             this.addBlock(new Block("Genesis Block"));
         }
     }
@@ -25,23 +25,23 @@ class Blockchain{
     async addBlock(newBlock){
         // Get the block height
         const height = await this.getBlockHeight();
-        if(height < 0) {
+        if(height < -1) {
             console.log("Cannot add block"); 
             return;
         }
 
         // If this is not the genesis block, fetch the hash from the best block
         // Set it as the previous hash of this block
-        if(height > 0){
+        if(height > -1){
             // Get the last block
-            const lastBlock = await this.bd.getLevelDBData(height - 1);
+            const lastBlock = await this.bd.getLevelDBData(height);
 
             const prevHash = JSON.parse(lastBlock).hash;
             newBlock.previousBlockHash = prevHash;
         }
 
         // Set other fields not related to previous block
-        newBlock.height = height;
+        newBlock.height = height + 1;
         newBlock.timestamp = new Date().valueOf();
         newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
 
@@ -60,10 +60,12 @@ class Blockchain{
     // Get block height, it is a helper method that return the height of the blockchain
     async getBlockHeight() {
         // Add your code here
-        return await this.bd.getBlocksCount().catch(err => {
+        const blockCount = await this.bd.getBlocksCount().catch(err => {
             console.log("Cannot get the block count");
-            return -1;
+            return -2;
         })
+
+        return blockCount - 1;
     }
 
     // Get Block By Height
@@ -100,7 +102,7 @@ class Blockchain{
 
         let prevHash = "";
         let errorLog = [];
-        for(let i=0; i<height; i++){
+        for(let i=0; i<=height; i++){
             const block = await this.getBlock(i);
 
             //console.log(block);

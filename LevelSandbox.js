@@ -69,7 +69,7 @@ class LevelSandbox {
                 console.log('Unable to read data stream!', err);
                 reject(err);
             }).on('close', function() {
-                console.log(`The next Block will be Block ${i}, which is the block height`);    
+                console.log(`The next Block will be Block ${i}`);    
                 resolve(i);
             });
         });
