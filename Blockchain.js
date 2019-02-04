@@ -68,7 +68,11 @@ class Blockchain{
         return blockCount - 1;
     }
 
-    // Get Block By Height
+    /**
+     * Get a block by height
+     * @param {*} height The height of the block
+     * @returns The block object if the height is valid. null if the height is invalid.
+     */
     async getBlock(height) {
         // Add your code here
         const block = await this.bd.getLevelDBData(height).catch(err => {
