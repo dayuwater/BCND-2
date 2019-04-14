@@ -46,14 +46,13 @@ class Blockchain{
         newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
 
         // Add to the DB
-        this.bd.addDataToLevelDB(newBlock)
-        .then(res => {
-            console.log(res);
-            console.log("The block is added successfully")
-        }).catch(err => {
-            console.log(err);
-            console.log("Failed to add the block");
-        });
+        const blockResponse =  await this.bd.addDataToLevelDB(newBlock).catch(err => {return null;});
+        if(blockResponse){
+            return blockResponse;
+        }
+        else{
+            return null;
+        }
 
     }
 
