@@ -1,6 +1,6 @@
-# Project Title
+# RESTful Web API with Node.js Framework
 
-One Paragraph of project description goes here
+A RESTful Web API using **Express.js** that operates a private Blockchain.
 
 ## Getting Started
 
@@ -8,80 +8,117 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+- Node.js
+- NPM (This should be installed already when you install Node.js)
 
-```
-Give examples
-```
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
 ```
-Give the example
+npm install
 ```
 
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+```
+node index.js
+```
 
-## Built With
+The server will run on port 8000
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+## API Endpoints
 
-## Contributing
+All request body must be in JSON.
+All response body is in JSON if your requested route is registered.
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Versioning
+If your requested route does not match one of the following routes, you will get a 404 response with an HTML response.
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+1. **GET** /block/:height
+- Request Parameters:
+    - height: The height(index) of the block requested
 
-## Authors
+- Request Body:
+    - No Request body.
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+- Successful Response:
 
-## License
+    This should be the content of the requested block in the blockchain
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+    Example:
+    ```
+    {
+        "previousBlockHash": "80562927837af4e93ee5da35490557800740fb849602c45cb9ee54635374e6bb",
+        "height": 1,
+        "timestamp": 1549078579502,
+        "body": "Test Block - 1",
+        "hash": "9cbcef59b63227937d18b3d45bb3af18dd02b581f93efbf7e573f40da8b6d260"
+    }
+    ```
 
-## Acknowledgments
+- Failed Responses:
+    - If you provide a block index that does not exist:
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+    ```
+    {
+    "error": "That block does not exist"
+    }
+    ``` 
+    with a 404 status code.
+
+    - If your requested block height is invalid:
+    ```
+    {
+    "error": "The block height must be a positive integer"
+    }
+    ```
+    with a 403 status code.
+
+2. **POST** /block
+- Request Parameters:
+    - No Request parameters
+
+- Request body:
+    - body: The text content of the new block to be added. This must not be an empty string
+
+- Successful Response:
+
+    This should be the content of the newly added block in the blockchain.
+
+    Example:
+    ```
+    {
+        "previousBlockHash": "47555406482a9af530bac65d41cec23a5b26ce59ef0b54540604b26ae9ea615e",
+        "height": 26,
+        "timestamp": 1555386494813,
+        "body": "123",
+        "hash": "a4802f467e9d6e566e8cdd1188d58189871940dbc809d9fc05d13f25005cfba2"
+    }
+    ```
+
+- Failed Responses:
+    - If your request body does not have a `body` field or that field is empty.
+
+    ```
+    {
+    "error": "Your request body must have a 'body' field, and there must not be empty."
+    }
+    ``` 
+    with a 403 status code.
+
+    - If the block was failed to added to the blockchain, which is very unlikely
+    ```
+    {"error":"The block was not added successfully. Please try again later."}
+    ```
+    with a 503 status code.
+
+
+
+
+
+
+
+
+

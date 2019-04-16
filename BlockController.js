@@ -9,7 +9,7 @@ const Block = require('./Block');
 // Constants used for error handing
 const NOT_INTEGER = {"error": "The block height must be a positive integer"};
 const NOT_FOUND = {"error": "That block does not exist"};
-const NOT_VALID_REQUEST = {"error": "Your request body must have a 'text' field, and there must be a text value."};
+const NOT_VALID_REQUEST = {"error": "Your request body must have a 'body' field, and there must not be empty."};
 const ADD_FAILED = {"error":"The block was not added successfully. Please try again later."}
 
 class BlockController{
@@ -56,7 +56,7 @@ class BlockController{
         })
 
         this.app.post("/block", async (req, response) => {
-            const text = req.body.text;
+            const text = req.body.body;
 
             if(!text){
                 response.status(403);
@@ -71,7 +71,7 @@ class BlockController{
                 response.json(blockResponse);
             }
             else{
-                response.status(404);
+                response.status(503);
                 response.json(ADD_FAILED);
             }
             
